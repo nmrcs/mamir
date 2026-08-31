@@ -1,0 +1,256 @@
+generator client {
+  // Prisma 7: prisma-client-js is removed, output is required, the client is
+  // generated as TypeScript into the repo. moduleFormat = cjs — NestJS runs on CommonJS.
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+// url is no longer set here: in Prisma 7 that is a schema error. The
+// connection string lives in prisma.config.ts (for the CLI and migrations) and
+// in the PrismaPg adapter (for runtime) — see src/prisma/prisma.service.ts.
+datasource db {
+  provider = "postgresql"
+}
+
+model Event {
+  // uuidv7 and DB-side generation — both choices are measured, not stylistic.
+  // Type: a random uuid stored as `text` cost 37 bytes and produced a 1002 MB
+  // PK index on 9M rows; native uuid is 16 bytes.
+  // Version 7: time-ordered, so inserts land at the right edge of the B-tree
+  // instead of a random page of a gigabyte-sized index.
+  // Generation in Postgres: COPY omits the column entirely, sparing the loader
+  // 26M randomUUID calls.
+  id         String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  pluginId   String
+  // Several aggregation axes at once: { card: "...", addr: "..." }. A single
+  // column would not do — the number of axes varies across domains.
+  entityKeys Json
+  occurredAt DateTime
+  // When it became known. Point-in-time filtering uses THIS, not occurredAt:
+  // an event that arrived late was not available at moment t.
+  ingestedAt DateTime @default(now())
+  exposure   Decimal  @db.Decimal(18, 4)
+  payload    Json
+  // Which ingest run brought the event. Null for events arriving over HTTP:
+  // a stream has no run. Without this reference an aborted load can only be
+  // rolled back by guessing from domain data — which already burned this project.
+  ingestRunId String?    @db.Uuid
+  ingestRun   IngestRun? @relation(fields: [ingestRunId], references: [id], onDelete: SetNull)
+
+  label  Label?
+  vector FeatureVector?
+  cases  BacktestCase[]
+
+  @@index([pluginId, occurredAt])
+  @@index([pluginId, ingestedAt])
+}
+
+// Bulk-load state — recorded, not reconstructed from indirect evidence.
+// An unfinished run (finishedAt = null) means an aborted load: its events are
+// deleted and the slice is loaded again.
+model IngestRun {
+  id       String @id @default(uuid()) @db.Uuid
+  pluginId String
+  // Source slice loaded by a single run: for Freddie Mac — origination year.
+  // Empty string when the dataset is monolithic.
+  cohort     String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  accepted   Int       @default(0)
+  rejected   Int       @default(0)
+
+  events Event[]
+
+  @@unique([pluginId, cohort])
+}
+
+model Label {
+  eventId String @id @db.Uuid
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  value   Boolean
+  // occurredAt + the plugin's horizonMs. Training as of moment t may only use
+  // labels that have matured by then.
+  resolvedAt DateTime
+
+  @@index([resolvedAt])
+}
+
+model FeatureVector {
+  id         String   @id @default(uuid())
+  eventId    String   @unique @db.Uuid
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  computedAt DateTime @default(now())
+  // Snapshot of what actually went into the model — the training set is later
+  // read from here too, so train/serve skew has nowhere to come from.
+  values     Json
+}
+
+model ModelVersion {
+  // The same identifier the scoring service knows the model by: the core
+  // generates it and passes it to /train, and the service names the artifact
+  // with it. No default on purpose — the value comes from the application, and
+  // a silent Prisma uuid would diverge from what went to /train.
+  //
+  // One thing must not have two identifiers: while the version was stored
+  // separately from the id, it could only be extracted by regex from the file name.
+  id       String @id
+  pluginId String
+  trainedAt DateTime @default(now())
+  // Training-data boundary: without it the backtest is not reproducible.
+  trainWindowEnd DateTime
+  calibration    String // isotonic | platt (Zod, not a Postgres enum)
+  // 99th percentile of the training set per feature. Not a metric: it
+  // describes what the model SAW, not how it performed. It has one reader —
+  // scenario stress: the share of values beyond this percentile tells how much
+  // of the model's answer under shock is extrapolation.
+  //
+  // Training metrics are absent on purpose: numbers from /train are computed
+  // by the calibrator on its own calibration split (in-sample) and are
+  // optimistically biased; honest estimates live in BacktestRun over the test
+  // window. A column nobody reads, holding numbers nobody can trust, is
+  // redundant twice over.
+  quantiles      Json
+
+  backtests BacktestRun[]
+
+  @@index([pluginId, trainedAt])
+}
+
+model BacktestRun {
+  id             String       @id @default(uuid())
+  pluginId       String
+  // The execution that spawned this run: six windows of one `backtest` share
+  // one identifier. Without it "results of the latest backtest" is not a query
+  // but a guess by creation time, and it silently mixes windows from different
+  // executions if some steps are re-run.
+  //
+  // Null for runs made before this tracking existed: there is nothing to group
+  // them by retroactively, and any invented grouping would be a claim the data
+  // does not contain.
+  executionId    String?      @db.Uuid
+  modelVersionId String
+  modelVersion   ModelVersion @relation(fields: [modelVersionId], references: [id])
+  windowFrom     DateTime
+  windowTo       DateTime
+  metrics        Json // brier, brierWeighted, logLoss, rocAuc, prAuc, ece, eceWeighted
+  reliability    Json // calibration curve bins
+  // Window breakdown by exposure at risk. Separate from reliability: that one
+  // slices by predicted probability and answers "when the model says 30%, is
+  // it wrong 30% of the time"; this one slices by position size and answers
+  // "does the error depend on how much money is at stake". The latter cannot
+  // be derived from averages.
+  deciles     Json
+  createdAt   DateTime @default(now())
+
+  cases BacktestCase[]
+
+  @@index([pluginId, createdAt])
+  @@index([pluginId, executionId])
+}
+
+model BacktestCase {
+  id      String      @id @default(uuid())
+  runId   String
+  run     BacktestRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  name    String
+  // A case cannot outlive its event: without the event neither the moment nor
+  // the feature vector can be retrieved, and those are exactly what opens a
+  // case. Without a foreign key a data reload orphaned 90 cases out of 100,
+  // and no query reported it — the rows looked intact.
+  eventId String @db.Uuid
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  kind    String // CAUGHT | MISSED | FALSE_POSITIVE
+  // What the model said about this event. The only fact of the case stored
+  // nowhere else: the moment lives in Event, the vector in FeatureVector, the
+  // outcome in Label, while the probability is computed during the run and
+  // vanishes with it.
+  //
+  // Not a Score row: there rawScore and latencyMs are required, while
+  // /evaluate returns only the calibrated probability. Storing made-up values
+  // there for the sake of normalization is worse than a column.
+  probability Float
+
+  @@index([runId])
+}
+
+model ScenarioRun {
+  id         String @id @default(uuid())
+  pluginId   String
+  scenarioId String
+  // The moment the portfolio is assembled for, and the position lookup depth.
+  // ΔEL is unreadable without them: it is the difference of two computations
+  // on a specific date.
+  asOf     DateTime
+  lookback String
+  // The model version both sides of the difference were computed with. A
+  // metric without a model version is not a metric, and that applies to ΔEL
+  // first of all: the same number on a crisis-era model and on a post-crisis
+  // one are different claims.
+  modelVersionId String
+  positions      Int
+  exposure       Decimal @db.Decimal(18, 4)
+  baseEL         Decimal @db.Decimal(18, 4)
+  stressedEL     Decimal @db.Decimal(18, 4)
+  affected       Int
+  // Features the shock can reach according to the declaration.
+  recomputed String[]
+  // How many rows the shock actually touched. Without it "the portfolio is
+  // resilient" and "the shock reached no rows at all" produce the same zero ΔEL.
+  coverage Json
+  // Share of values beyond the training set's 99th percentile — before the
+  // shock and after. A stress test without it is unreliable: the model's
+  // answer outside the training distribution is unknown, not "just higher".
+  extrapolation Json
+  createdAt     DateTime @default(now())
+
+  @@index([pluginId, createdAt])
+}
+
+// Historical run: what the model said as of moment t and how it all turned out.
+//
+// A separate model, not a flag on ScenarioRun. They share only the portfolio
+// header; the second half differs, and stuffing realized losses into
+// `stressedEL` would give one column two incompatible meanings.
+model HistoricalRun {
+  id         String @id @default(uuid())
+  pluginId   String
+  scenarioId String
+  asOf       DateTime
+  lookback   String
+  // Model version and its training boundary. The latter cannot be derived
+  // from the former without a join, yet it is always read alongside the
+  // result: "off by this much" on a fresh model and on a decade-old one are
+  // different claims.
+  modelVersionId String
+  trainedTo      DateTime
+  positions      Int
+  // How many positions the comparison is possible for at all: a vector exists
+  // and the label has matured. Both sides are computed over this set —
+  // otherwise prediction and realization would refer to different portfolios.
+  compared Int
+  exposure Decimal @db.Decimal(18, 4)
+  // Σ p × exposure versus Σ exposure over triggered labels.
+  predictedEL  Decimal @db.Decimal(18, 4)
+  realizedLoss Decimal @db.Decimal(18, 4)
+  // The same comparison in counts, unweighted: Σ p versus the actual number.
+  expectedPositives Float
+  observedPositives Int
+  // Why the remaining positions were dropped. A silently discarded part of
+  // the portfolio makes the ratio unreliable, and the ratio itself does not
+  // show it.
+  withoutVector Int
+  withoutLabel  Int
+  unmatured     Int
+  // The same exposure-at-risk breakdown as the backtest's, but over portfolio
+  // positions: predicted losses versus realized within each group.
+  deciles Json
+  // Predicted loss distribution (LossDistribution from the contract) and
+  // where the realized loss falls within it. Nullable not "just in case": the
+  // simulation is computed on explicit request, and a run without it is a
+  // complete run.
+  distribution Json?
+  createdAt    DateTime @default(now())
+
+  @@index([pluginId, createdAt])
+}

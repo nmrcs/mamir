@@ -1,0 +1,578 @@
+[
+	{
+		"step": 0,
+		"testFrom": "2005-01-01 00:00:00",
+		"testTo": "2005-12-01 00:00:00",
+		"trainRows": 5128433,
+		"testRows": 1782314,
+		"features": [
+			"loan_dlq_months_365d",
+			"loan_time_since_prev",
+			"loan_upb_mean_365d",
+			"loan_upb_min_365d",
+			"loan_rate_mean_365d",
+			"state_events_90d",
+			"state_upb_mean_365d"
+		],
+		"featureRanking": [
+			{
+				"feature": "loan_dlq_months_365d",
+				"auc": 0.8707187167155804,
+				"sign": 1
+			},
+			{
+				"feature": "loan_rate_mean_365d",
+				"auc": 0.735950704098485,
+				"sign": 1
+			},
+			{
+				"feature": "state_upb_mean_365d",
+				"auc": 0.5787671332137174,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_mean_365d",
+				"auc": 0.5648340599216675,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_min_365d",
+				"auc": 0.5622389108538919,
+				"sign": -1
+			},
+			{
+				"feature": "loan_time_since_prev",
+				"auc": 0.5064961925017417,
+				"sign": -1
+			},
+			{
+				"feature": "state_events_90d",
+				"auc": 0.5005074184616741,
+				"sign": -1
+			}
+		],
+		"contenders": {
+			"single": {
+				"brier": 0.004433964266481174,
+				"brierWeighted": 0.0035563040096730837,
+				"logLoss": 0.01931862340900456,
+				"rocAuc": 0.909434030524821,
+				"prAuc": 0.31839903635021677,
+				"positiveRate": 0.005794714062729687,
+				"ece": 0.00034264893792504593,
+				"eceWeighted": 0.0004681200385724047
+			},
+			"logreg": {
+				"brier": 0.004443201355664226,
+				"brierWeighted": 0.0035553741132477454,
+				"logLoss": 0.020658757063721063,
+				"rocAuc": 0.9459036286494555,
+				"prAuc": 0.34695541913228806,
+				"positiveRate": 0.005794714062729687,
+				"ece": 0.0015391525730376445,
+				"eceWeighted": 0.0015150925355467736
+			},
+			"gbdt": {
+				"brier": 0.004570744393346767,
+				"brierWeighted": 0.003659272416239316,
+				"logLoss": 0.021178022787502346,
+				"rocAuc": 0.9346870227238445,
+				"prAuc": 0.329843659761919,
+				"positiveRate": 0.005794714062729687,
+				"ece": 0.0020608389666787047,
+				"eceWeighted": 0.001842942203881635
+			},
+			"gbdt-unweighted": {
+				"brier": 0.004663952498614998,
+				"brierWeighted": 0.0037197633438159237,
+				"logLoss": 0.021204917562705126,
+				"rocAuc": 0.9391548497257248,
+				"prAuc": 0.303706960804811,
+				"positiveRate": 0.005794714062729687,
+				"ece": 0.0021169690129465273,
+				"eceWeighted": 0.0019061678360655786
+			}
+		},
+		"elapsedMs": 70527
+	},
+	{
+		"step": 1,
+		"testFrom": "2006-01-01 00:00:00",
+		"testTo": "2006-12-01 00:00:00",
+		"trainRows": 6612352,
+		"testRows": 2129557,
+		"features": [
+			"loan_dlq_months_365d",
+			"loan_time_since_prev",
+			"loan_upb_mean_365d",
+			"loan_upb_min_365d",
+			"loan_rate_mean_365d",
+			"state_events_90d",
+			"state_upb_mean_365d"
+		],
+		"featureRanking": [
+			{
+				"feature": "loan_dlq_months_365d",
+				"auc": 0.8896505702729071,
+				"sign": 1
+			},
+			{
+				"feature": "loan_rate_mean_365d",
+				"auc": 0.7480806399440012,
+				"sign": 1
+			},
+			{
+				"feature": "state_upb_mean_365d",
+				"auc": 0.5940858737248945,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_mean_365d",
+				"auc": 0.5674994005933675,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_min_365d",
+				"auc": 0.5645999171430924,
+				"sign": -1
+			},
+			{
+				"feature": "loan_time_since_prev",
+				"auc": 0.511438543765251,
+				"sign": -1
+			},
+			{
+				"feature": "state_events_90d",
+				"auc": 0.5100656739459279,
+				"sign": -1
+			}
+		],
+		"contenders": {
+			"single": {
+				"brier": 0.004308694200141501,
+				"brierWeighted": 0.0036439637409837653,
+				"logLoss": 0.01924055308562567,
+				"rocAuc": 0.8963963529430242,
+				"prAuc": 0.2812062930553058,
+				"positiveRate": 0.005346651909293811,
+				"ece": 0.0007849027431504894,
+				"eceWeighted": 0.0005077109323746172
+			},
+			"logreg": {
+				"brier": 0.004302214668172249,
+				"brierWeighted": 0.0036618933974265507,
+				"logLoss": 0.020901589599578847,
+				"rocAuc": 0.9284728881224672,
+				"prAuc": 0.2973925865383383,
+				"positiveRate": 0.005346651909293811,
+				"ece": 0.001509712047037009,
+				"eceWeighted": 0.0015923232409470705
+			},
+			"gbdt": {
+				"brier": 0.004438358014680631,
+				"brierWeighted": 0.003783959007854171,
+				"logLoss": 0.020785609051765214,
+				"rocAuc": 0.9244726186510317,
+				"prAuc": 0.27629427355735375,
+				"positiveRate": 0.005346651909293811,
+				"ece": 0.001857117932443407,
+				"eceWeighted": 0.0018181904390588168
+			},
+			"gbdt-unweighted": {
+				"brier": 0.004541950515728557,
+				"brierWeighted": 0.00386988000741274,
+				"logLoss": 0.020788136179715328,
+				"rocAuc": 0.9272052658427739,
+				"prAuc": 0.2533364369142796,
+				"positiveRate": 0.005346651909293811,
+				"ece": 0.001953283938679282,
+				"eceWeighted": 0.0018995172967784682
+			}
+		},
+		"elapsedMs": 86076
+	},
+	{
+		"step": 2,
+		"testFrom": "2007-01-01 00:00:00",
+		"testTo": "2007-12-01 00:00:00",
+		"trainRows": 8422100,
+		"testRows": 2505082,
+		"features": [
+			"loan_dlq_months_365d",
+			"loan_time_since_prev",
+			"loan_upb_mean_365d",
+			"loan_upb_min_365d",
+			"loan_rate_mean_365d",
+			"state_events_90d",
+			"state_upb_mean_365d"
+		],
+		"featureRanking": [
+			{
+				"feature": "loan_dlq_months_365d",
+				"auc": 0.8965651386672477,
+				"sign": 1
+			},
+			{
+				"feature": "loan_rate_mean_365d",
+				"auc": 0.760305689820858,
+				"sign": 1
+			},
+			{
+				"feature": "state_upb_mean_365d",
+				"auc": 0.6030415256908042,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_mean_365d",
+				"auc": 0.5793913365351923,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_min_365d",
+				"auc": 0.5760861358595356,
+				"sign": -1
+			},
+			{
+				"feature": "state_events_90d",
+				"auc": 0.5173418062925088,
+				"sign": -1
+			},
+			{
+				"feature": "loan_time_since_prev",
+				"auc": 0.5070891884641637,
+				"sign": -1
+			}
+		],
+		"contenders": {
+			"single": {
+				"brier": 0.006109010606832183,
+				"brierWeighted": 0.00608864622574083,
+				"logLoss": 0.028902058762626557,
+				"rocAuc": 0.8504939192754066,
+				"prAuc": 0.2223344483686651,
+				"positiveRate": 0.007266827992057745,
+				"ece": 0.0019733376976124556,
+				"eceWeighted": 0.002436577515227539
+			},
+			"logreg": {
+				"brier": 0.006196086626956637,
+				"brierWeighted": 0.006232176885354153,
+				"logLoss": 0.03151758030219717,
+				"rocAuc": 0.8662840365444445,
+				"prAuc": 0.2280833763163415,
+				"positiveRate": 0.007266827992057745,
+				"ece": 0.0030325986670302263,
+				"eceWeighted": 0.003930291268463562
+			},
+			"gbdt": {
+				"brier": 0.006306118201289578,
+				"brierWeighted": 0.006383252606411427,
+				"logLoss": 0.03146428977055263,
+				"rocAuc": 0.8627138084584475,
+				"prAuc": 0.21817993052111462,
+				"positiveRate": 0.007266827992057745,
+				"ece": 0.0033371385789428753,
+				"eceWeighted": 0.004120784409684526
+			},
+			"gbdt-unweighted": {
+				"brier": 0.006383178600885565,
+				"brierWeighted": 0.006423453423107716,
+				"logLoss": 0.03158216514612589,
+				"rocAuc": 0.8701991458604,
+				"prAuc": 0.2050612545968697,
+				"positiveRate": 0.007266827992057745,
+				"ece": 0.003484770207115592,
+				"eceWeighted": 0.004123504068604845
+			}
+		},
+		"elapsedMs": 107400
+	},
+	{
+		"step": 3,
+		"testFrom": "2008-01-01 00:00:00",
+		"testTo": "2008-12-01 00:00:00",
+		"trainRows": 10583110,
+		"testRows": 2606167,
+		"features": [
+			"loan_dlq_months_365d",
+			"loan_time_since_prev",
+			"loan_upb_mean_365d",
+			"loan_upb_min_365d",
+			"loan_rate_mean_365d",
+			"state_events_90d",
+			"state_upb_mean_365d"
+		],
+		"featureRanking": [
+			{
+				"feature": "loan_dlq_months_365d",
+				"auc": 0.8992811138388219,
+				"sign": 1
+			},
+			{
+				"feature": "loan_rate_mean_365d",
+				"auc": 0.7623878306892735,
+				"sign": 1
+			},
+			{
+				"feature": "state_upb_mean_365d",
+				"auc": 0.6111296389761534,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_mean_365d",
+				"auc": 0.5888935223818224,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_min_365d",
+				"auc": 0.585377583879479,
+				"sign": -1
+			},
+			{
+				"feature": "state_events_90d",
+				"auc": 0.5252475606838791,
+				"sign": -1
+			},
+			{
+				"feature": "loan_time_since_prev",
+				"auc": 0.5060150403920218,
+				"sign": -1
+			}
+		],
+		"contenders": {
+			"single": {
+				"brier": 0.01714577382949515,
+				"brierWeighted": 0.021077115376080664,
+				"logLoss": 0.08241087729475965,
+				"rocAuc": 0.8086975492649241,
+				"prAuc": 0.2851024034491404,
+				"positiveRate": 0.02043575872152475,
+				"ece": 0.013569805427651536,
+				"eceWeighted": 0.018096714920003237
+			},
+			"logreg": {
+				"brier": 0.01757798700102495,
+				"brierWeighted": 0.021750232494570244,
+				"logLoss": 0.09060041605926913,
+				"rocAuc": 0.8099697372197341,
+				"prAuc": 0.2788438746732348,
+				"positiveRate": 0.02043575872152475,
+				"ece": 0.014501170781790614,
+				"eceWeighted": 0.019588157184652965
+			},
+			"gbdt": {
+				"brier": 0.017665817534780828,
+				"brierWeighted": 0.021967664950337598,
+				"logLoss": 0.08764865075055885,
+				"rocAuc": 0.8174900359552087,
+				"prAuc": 0.27876363995086434,
+				"positiveRate": 0.02043575872152475,
+				"ece": 0.014284607428923023,
+				"eceWeighted": 0.019326543269407147
+			},
+			"gbdt-unweighted": {
+				"brier": 0.01783939429971097,
+				"brierWeighted": 0.022133925405751317,
+				"logLoss": 0.0873510404325029,
+				"rocAuc": 0.8318448383897366,
+				"prAuc": 0.2706712329300328,
+				"positiveRate": 0.02043575872152475,
+				"ece": 0.014397393182430131,
+				"eceWeighted": 0.019385167692895066
+			}
+		},
+		"elapsedMs": 131763
+	},
+	{
+		"step": 4,
+		"testFrom": "2009-01-01 00:00:00",
+		"testTo": "2009-12-01 00:00:00",
+		"trainRows": 13119684,
+		"testRows": 2263057,
+		"features": [
+			"loan_dlq_months_365d",
+			"loan_time_since_prev",
+			"loan_upb_mean_365d",
+			"loan_upb_min_365d",
+			"loan_rate_mean_365d",
+			"state_events_90d",
+			"state_upb_mean_365d"
+		],
+		"featureRanking": [
+			{
+				"feature": "loan_dlq_months_365d",
+				"auc": 0.8981239753908022,
+				"sign": 1
+			},
+			{
+				"feature": "loan_rate_mean_365d",
+				"auc": 0.7538908552355676,
+				"sign": 1
+			},
+			{
+				"feature": "state_upb_mean_365d",
+				"auc": 0.6165279932871793,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_mean_365d",
+				"auc": 0.5909218266996279,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_min_365d",
+				"auc": 0.5873087423037275,
+				"sign": -1
+			},
+			{
+				"feature": "state_events_90d",
+				"auc": 0.5279683424920708,
+				"sign": -1
+			},
+			{
+				"feature": "loan_time_since_prev",
+				"auc": 0.5058763177866176,
+				"sign": -1
+			}
+		],
+		"contenders": {
+			"single": {
+				"brier": 0.03242222171561465,
+				"brierWeighted": 0.04303418462325742,
+				"logLoss": 0.12951478477914397,
+				"rocAuc": 0.8707056168294546,
+				"prAuc": 0.49125523067365445,
+				"positiveRate": 0.045212294696951955,
+				"ece": 0.027387516285579856,
+				"eceWeighted": 0.03984888501979491
+			},
+			"logreg": {
+				"brier": 0.03340486072743623,
+				"brierWeighted": 0.04470522828560762,
+				"logLoss": 0.13866309261617146,
+				"rocAuc": 0.8690734178724042,
+				"prAuc": 0.4840950906827976,
+				"positiveRate": 0.045212294696951955,
+				"ece": 0.028338718282511118,
+				"eceWeighted": 0.04196571818117414
+			},
+			"gbdt": {
+				"brier": 0.0327673523332039,
+				"brierWeighted": 0.04363454982314801,
+				"logLoss": 0.13253790012772632,
+				"rocAuc": 0.8943005032343805,
+				"prAuc": 0.5071691989532704,
+				"positiveRate": 0.045212294696951955,
+				"ece": 0.027685247477077138,
+				"eceWeighted": 0.0401847613966592
+			},
+			"gbdt-unweighted": {
+				"brier": 0.033133772208054905,
+				"brierWeighted": 0.04386615667234056,
+				"logLoss": 0.1328047479882798,
+				"rocAuc": 0.8928933543336433,
+				"prAuc": 0.4976307122012643,
+				"positiveRate": 0.045212294696951955,
+				"ece": 0.027910101268002353,
+				"eceWeighted": 0.040099409235937536
+			}
+		},
+		"elapsedMs": 160192
+	},
+	{
+		"step": 5,
+		"testFrom": "2010-01-01 00:00:00",
+		"testTo": "2010-12-01 00:00:00",
+		"trainRows": 15707625,
+		"testRows": 1878314,
+		"features": [
+			"loan_dlq_months_365d",
+			"loan_time_since_prev",
+			"loan_upb_mean_365d",
+			"loan_upb_min_365d",
+			"loan_rate_mean_365d",
+			"state_events_90d",
+			"state_upb_mean_365d"
+		],
+		"featureRanking": [
+			{
+				"feature": "loan_dlq_months_365d",
+				"auc": 0.889850938403149,
+				"sign": 1
+			},
+			{
+				"feature": "loan_rate_mean_365d",
+				"auc": 0.7320933010893341,
+				"sign": 1
+			},
+			{
+				"feature": "state_upb_mean_365d",
+				"auc": 0.600705828472853,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_mean_365d",
+				"auc": 0.5784594716209112,
+				"sign": -1
+			},
+			{
+				"feature": "loan_upb_min_365d",
+				"auc": 0.5747707737134271,
+				"sign": -1
+			},
+			{
+				"feature": "state_events_90d",
+				"auc": 0.5155941773358766,
+				"sign": -1
+			},
+			{
+				"feature": "loan_time_since_prev",
+				"auc": 0.5046639091822791,
+				"sign": -1
+			}
+		],
+		"contenders": {
+			"single": {
+				"brier": 0.03385050106044546,
+				"brierWeighted": 0.04455056022815708,
+				"logLoss": 0.12298339763655806,
+				"rocAuc": 0.908945777239406,
+				"prAuc": 0.5847437411258568,
+				"positiveRate": 0.060809321551135755,
+				"ece": 0.00842461109731516,
+				"eceWeighted": 0.019201907692089144
+			},
+			"logreg": {
+				"brier": 0.03410062789609231,
+				"brierWeighted": 0.04484349335181316,
+				"logLoss": 0.12447806805960357,
+				"rocAuc": 0.9212360399280489,
+				"prAuc": 0.596830782167647,
+				"positiveRate": 0.060809321551135755,
+				"ece": 0.008413213700504994,
+				"eceWeighted": 0.0199955963149766
+			},
+			"gbdt": {
+				"brier": 0.03376025881071825,
+				"brierWeighted": 0.04447800519285993,
+				"logLoss": 0.12284576314460242,
+				"rocAuc": 0.9306228074298492,
+				"prAuc": 0.6037510001582483,
+				"positiveRate": 0.060809321551135755,
+				"ece": 0.010403897553104575,
+				"eceWeighted": 0.020175533744837475
+			},
+			"gbdt-unweighted": {
+				"brier": 0.03424132542295052,
+				"brierWeighted": 0.045249365518219696,
+				"logLoss": 0.12373379377137746,
+				"rocAuc": 0.93048349395364,
+				"prAuc": 0.5872984545988054,
+				"positiveRate": 0.060809321551135755,
+				"ece": 0.011017448635289551,
+				"eceWeighted": 0.020432774201965424
+			}
+		},
+		"elapsedMs": 185975
+	}
+]

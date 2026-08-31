@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+@import '@heroui/styles';
+
+/* Section-card typography. HeroUI defaults (p-4, text-sm title) target a
+   widget card; here a card is a report section with a thousand-pixel table,
+   and the title must carry its weight. One definition for all screens —
+   JSX never sets title sizes. */
+.card {
+	@apply gap-4 p-6;
+}
+
+.card__title {
+	@apply text-lg leading-7 font-semibold tracking-tight;
+}
+
+.card__description {
+	@apply max-w-3xl;
+}
+
+/* Two chart series — predicted and observed. Not HeroUI tokens: those mean
+   state ("danger", "success"), while here color means series membership, and
+   a red "observed" would read as a verdict. The pair is checked for
+   color-blind separability (ΔE 24.7 protan). Dark values match the report's
+   standalone SVGs (charts.tsx): one palette, two carriers. The app theme is
+   dark (index.html). */
+:root {
+	--viz-predicted: #2a78d6;
+	--viz-observed: #eb6834;
+}
+.dark {
+	--viz-predicted: #3987e5;
+	--viz-observed: #d95926;
+}

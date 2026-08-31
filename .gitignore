@@ -1,0 +1,18 @@
+node_modules
+dist
+generated
+*.log
+*.tsbuildinfo
+.env
+.DS_Store
+
+# Datasets are not redistributable — everyone downloads their own copy
+data
+
+# Python scoring service: venv and trained artifacts
+.venv
+__pycache__
+apps/scoring/models
+
+# Local MCP config — personal editor setup, not part of the project
+.mcp.json

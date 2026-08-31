@@ -1,0 +1,7 @@
+{
+	"delimiter": ",",
+	"header": true,
+	"main": {
+		"file": "synthetic.csv"
+	}
+}

@@ -1,0 +1,6 @@
+node_modules
+dist
+generated
+data
+package-lock.json
+*.log

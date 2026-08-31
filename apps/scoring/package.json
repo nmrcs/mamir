@@ -1,0 +1,16 @@
+{
+	"name": "@mamir/scoring",
+	"version": "0.1.0",
+	"private": true,
+	"description": "MAMIR scoring: gradient boosting + isotonic calibration over core-computed features",
+	"author": "Nikita MRCS",
+	"license": "MIT",
+	"scripts": {
+		"setup": "python3 -m venv .venv && .venv/bin/pip install -q -r requirements.txt",
+		"predev": "lsof -ti:8001 | xargs kill -9 2>/dev/null; true",
+		"dev": ".venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload",
+		"start": ".venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001",
+		"health": "curl -sf http://127.0.0.1:8001/health",
+		"test": ".venv/bin/python -m unittest discover -s test -t . -v"
+	}
+}

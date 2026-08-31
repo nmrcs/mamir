@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:18.4-trixie
+    container_name: mamir-postgres
+    environment:
+      POSTGRES_DB: mamir
+      POSTGRES_USER: mamir
+      POSTGRES_PASSWORD: mamir
+    # The short form '5432:5432' binds to 0.0.0.0 — the database becomes
+    # reachable from the whole local network, and the password here is a
+    # default. An explicit 127.0.0.1 keeps it host-only; the compose container
+    # network is unaffected.
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      # PG 18+ keeps data in a subdirectory named after the major version and
+      # requires mounting /var/lib/postgresql, not .../data — with the old
+      # path the image refuses to start. See docker-library/postgres#1259.
+      - pg_data:/var/lib/postgresql
+    # Parallel workers exchange tuples through /dev/shm, and Docker gives it
+    # 64 MB. On 26M rows a parallel plan fails with "could not resize shared
+    # memory segment" — and it is the query that fails, not the server, so it
+    # looks like a SQL error rather than resource exhaustion.
+    #
+    # The size is not arbitrary: a parallel hash join takes up to work_mem per
+    # worker, i.e. 256 MB × (8 + 1) ≈ 2.3 GB. Two gigabytes fell short for
+    # exactly this reason — the configuration contradicted itself.
+    shm_size: 4gb
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U mamir -d mamir']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    # Postgres defaults are tuned to start anywhere, not to compute window
+    # functions over 26M rows. The key setting is work_mem: with the stock
+    # 4 MB the window sort spills entirely to disk.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=4GB
+      - -c
+      - effective_cache_size=10GB
+      - -c
+      - work_mem=256MB
+      - -c
+      - maintenance_work_mem=2GB
+      - -c
+      - max_parallel_workers_per_gather=8
+      - -c
+      - max_parallel_workers=12
+      - -c
+      - max_worker_processes=12
+      # SSD: random reads do not cost 4x sequential ones
+      - -c
+      - random_page_cost=1.1
+      # Bulk ingest writes ~36 GB. At the default max_wal_size=1GB that means
+      # thirty-plus FORCED checkpoints, each flushing the dirty part of the
+      # four-gigabyte shared_buffers right in the middle of COPY.
+      - -c
+      - max_wal_size=16GB
+      - -c
+      - checkpoint_timeout=30min
+      - -c
+      - checkpoint_completion_target=0.9
+      # CPU is abundant here and disk is the bottleneck: trade one for the
+      # other.
+      - -c
+      - wal_compression=zstd
+
+volumes:
+  pg_data:

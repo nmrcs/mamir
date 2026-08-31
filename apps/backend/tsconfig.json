@@ -1,0 +1,17 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		// NestJS is built by tsc into CommonJS — hence moduleFormat = "cjs" on the
+		// Prisma generator. The base ESNext/bundler setup does not fit here.
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"isolatedModules": false,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"baseUrl": "./"
+	},
+	"include": ["src", "prisma"],
+	"exclude": ["node_modules", "dist"]
+}

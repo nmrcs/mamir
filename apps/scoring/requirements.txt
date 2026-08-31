@@ -1,0 +1,16 @@
+# Gradient boosting comes from scikit-learn, not LightGBM. The reason is
+# not quality: on macOS LightGBM needs the native libomp dependency, absent
+# without Homebrew, and its only advantage here — categorical features out
+# of the box — goes unused: all domain features are numeric aggregates.
+# HistGradientBoostingClassifier is the same histogram GBDT with native
+# missing-value handling and OpenMP inside its own wheel.
+fastapi==0.140.0
+uvicorn[standard]==0.51.0
+pydantic==2.13.4
+scikit-learn==1.9.0
+# Direct imports (numpy — everywhere, scipy.stats.norm — the Vasicek model)
+# are declared explicitly rather than arriving silently via scikit-learn.
+numpy==2.4.6
+scipy==1.17.1
+pandas==2.3.3
+joblib==1.5.3

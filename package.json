@@ -1,0 +1,32 @@
+{
+	"name": "mamir",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Multi-domain Analytics & Modeling for Incident Risk",
+	"author": "Nikita MRCS",
+	"license": "MIT",
+	"workspaces": [
+		"packages/*",
+		"plugins/*",
+		"apps/*"
+	],
+	"scripts": {
+		"build": "npm run build --workspaces --if-present",
+		"test": "npm test -w @mamir/backend && npm test -w @mamir/scoring",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\"",
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\"",
+		"boundary": "./scripts/boundary.sh"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.39.5",
+		"eslint": "^9.39.5",
+		"eslint-config-prettier": "^9.1.2",
+		"eslint-import-resolver-typescript": "^4.4.5",
+		"eslint-plugin-import": "^2.32.0",
+		"prettier": "^3.9.5",
+		"typescript": "^5.6.0",
+		"typescript-eslint": "^8.63.0"
+	}
+}

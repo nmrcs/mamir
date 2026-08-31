@@ -1,0 +1,33 @@
+{
+	"name": "@mamir/contracts",
+	"version": "0.1.0",
+	"description": "Domain plugin contract and shared Zod schemas for MAMIR",
+	"author": "Nikita MRCS",
+	"license": "MIT",
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format cjs,esm --dts --clean",
+		"dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+		"prepare": "npm run build"
+	},
+	"peerDependencies": {
+		"zod": "^4.4.0"
+	},
+	"devDependencies": {
+		"tsup": "^8.5.1",
+		"zod": "^4.4.3"
+	}
+}
